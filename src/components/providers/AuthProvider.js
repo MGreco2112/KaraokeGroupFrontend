@@ -22,7 +22,7 @@ const AuthProvider = (props) => {
                 id: JSON.parse(localStorage['Id'])
             });
         }
-    });
+    }, []);
 
     return(
         <AuthContext.Provider value={[auth, setAuth, saveAuth]}>
