@@ -1,8 +1,16 @@
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import {AuthProvider} from "./components/providers/AuthProvider";
+import AppRouter from "./components/routes/AppRouter";
+
 
 function App() {
   return (
-    <h1>Placeholder</h1>
+    <BrowserRouter>
+      <AuthProvider>
+        <AppRouter/>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 
