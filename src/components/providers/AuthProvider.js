@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 
-const AuthContext = React.createContext([{}, () => {}, () => {}]);
+const AuthContext = React.createContext([{}, () => {}, () => {}, () => {}]);
 
 const AuthProvider = (props) => {
     const [auth, setAuth] = useState({
@@ -16,6 +16,10 @@ const AuthProvider = (props) => {
         localStorage.setItem('Id', JSON.stringify(newAuth.id));
     }
 
+    const deleteAuth = () => {
+        localStorage.removeItem('Id');
+    }
+
     useEffect(() => {
         if (localStorage['Id'] != undefined) {
             setAuth({
@@ -25,7 +29,7 @@ const AuthProvider = (props) => {
     }, []);
 
     return(
-        <AuthContext.Provider value={[auth, setAuth, saveAuth]}>
+        <AuthContext.Provider value={[auth, setAuth, saveAuth, deleteAuth]}>
             {props.children}
         </AuthContext.Provider>
     );

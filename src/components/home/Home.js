@@ -7,20 +7,18 @@ import Button from "../common/Button";
 
 const Home = () => {
 
-    const [auth, setAuth, saveAuth] = useContext(AuthContext);
+    const [auth, setAuth, saveAuth, deleteAuth] = useContext(AuthContext);
 
-    const [loading, setLoading] = useState(true);
-
-    const [newGuest, setNewGuest] = useState({});
+    const [isFirstRender, setIsFirstRender] = useState(true);
 
     useEffect(() => {
         const _deleteInactiveUser = async () => {
-            if (auth.id == false) {
+            if (isFirstRender == true && auth.id !== null) {
                 try {
                     await axios.delete(
                         `${apiHostUrl}/api/guest/delete/id/${auth.id}`, {
                                 headers: {
-                                    Authorization: `Bearer: ${loginToken}`
+                                    Authorization: `Bearer ${loginToken}`
                                 }
                         }
                     );
@@ -28,10 +26,10 @@ const Home = () => {
                     setAuth({
                         id: null
                     });
-    
-                    saveAuth({
-                        id: null
-                    });
+
+                    deleteAuth();
+                    
+                    setIsFirstRender(false);
                 } catch (err) {
                     console.error(err.message ? err.message : err.response);
                 }
@@ -49,7 +47,8 @@ const Home = () => {
                 }
             });
 
-            setNewGuest(res.data);
+            setAuth(res.data);
+            saveAuth(res.data);
 
         } catch (err) {
             console.error(err.message ? err.message : err.response);
