@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { apiHostUrl, loginToken } from "../config";
 import { AuthContext } from "../providers/AuthProvider";
+import { useNavigate } from "react-router-dom";
 import Container from "../common/Container";
 import Button from "../common/Button";
 
@@ -10,6 +11,8 @@ const Home = () => {
     const [auth, setAuth, saveAuth, deleteAuth] = useContext(AuthContext);
 
     const [isFirstRender, setIsFirstRender] = useState(true);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const _deleteInactiveUser = async () => {
@@ -49,6 +52,9 @@ const Home = () => {
 
             setAuth(res.data);
             saveAuth(res.data);
+            // console.log(res.data.id);
+
+            _createRoom(res.data.id);
 
         } catch (err) {
             console.error(err.message ? err.message : err.response);
@@ -56,9 +62,24 @@ const Home = () => {
         
     }
 
+    const _createRoom = async (host) => {
+
+        try {
+            const res = await axios.post(`${apiHostUrl}/api/rooms/new/host/id/${host}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            navigate(`/room/${res.data.id}`);
+
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
+        }
+    }
+
     const onCreateRoomClick = () => {
         _createGuestUser();
-        //navigate to create room page
     }
 
     const onCreateGuestClick = () => {
