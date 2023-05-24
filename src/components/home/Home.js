@@ -10,37 +10,7 @@ const Home = () => {
 
     const [auth, setAuth, saveAuth, deleteAuth] = useContext(AuthContext);
 
-    const [isFirstRender, setIsFirstRender] = useState(true);
-
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const _deleteInactiveUser = async () => {
-            if (isFirstRender == true && auth.id !== null) {
-                try {
-                    await axios.delete(
-                        `${apiHostUrl}/api/guest/delete/id/${auth.id}`, {
-                                headers: {
-                                    Authorization: `Bearer ${loginToken}`
-                                }
-                        }
-                    );
-    
-                    setAuth({
-                        id: null
-                    });
-
-                    deleteAuth();
-                    
-                    setIsFirstRender(false);
-                } catch (err) {
-                    console.error(err.message ? err.message : err.response);
-                }
-            }
-        }
-
-        _deleteInactiveUser();
-    }, [auth, setAuth, saveAuth]);
 
     const _createGuestUser = async () => {
         try {
@@ -52,7 +22,6 @@ const Home = () => {
 
             setAuth(res.data);
             saveAuth(res.data);
-            // console.log(res.data.id);
 
             _createRoom(res.data.id);
 
