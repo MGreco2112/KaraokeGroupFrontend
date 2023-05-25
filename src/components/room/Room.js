@@ -40,7 +40,19 @@ const Room = () => {
 
     const _leaveRoom = async () => {
         try {
-            
+            const res = await axios.delete(`${apiHostUrl}/api/guest/delete/id/${auth.id}`, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            setAuth({
+                id: null
+            });
+
+            saveAuth({});
+
+            navigate("/");
         } catch (err) {
             console.error(err.response ? err.response : err.message);
         }
@@ -55,7 +67,20 @@ const Room = () => {
 
     return(
         <Container style={{minHeight: '0em'}}>
-            <Button>Leave Room</Button>
+            <h1>Room</h1>
+
+            {loading ?
+                        <h2>Loading...</h2>
+                    :
+                        <Container style={{minHeight: '0em'}}>
+                            <h2>ID: {room.id}</h2>
+                            <Button
+                                style={{width: '25%'}}
+                                onClick={_leaveRoom}
+                            >Leave Room</Button>
+                        </Container>
+
+            }
         </Container>
     );
 }
