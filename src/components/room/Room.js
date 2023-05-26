@@ -21,7 +21,7 @@ const Room = () => {
     const [loading, setLoading] = useState(true);
 
     const _getRoom = async () => {
-        if (!loading) {
+        if (loading) {
             try {
                 const res = await axios.get(`${apiHostUrl}/api/rooms/id/${params.id}`, {
                     headers: {
@@ -50,7 +50,9 @@ const Room = () => {
                 id: null
             });
 
-            saveAuth({});
+            saveAuth({
+                id: null
+            });
 
             navigate("/");
         } catch (err) {
@@ -59,8 +61,25 @@ const Room = () => {
     }
 
     _getRoom();
-    console.log(room);
 
+    const formatGuests = () => {
+        //todo refactor with a guest component with buttons
+
+        return(
+                <Container style={{minHeight: '10em'}}>
+                    <h2>Host: {room.host.id}</h2>
+                    <h3>Guests:</h3>
+
+                    {
+                        room.guests.map(guest => {
+                            return <p>{guest.id}</p>
+                        })
+                    }
+
+                </Container>
+            
+            );
+    }
 
 
     
@@ -74,8 +93,9 @@ const Room = () => {
                     :
                         <Container style={{minHeight: '0em'}}>
                             <h2>ID: {room.id}</h2>
+                            {formatGuests()}
                             <Button
-                                style={{width: '25%'}}
+                                style={{width: '10%'}}
                                 onClick={_leaveRoom}
                             >Leave Room</Button>
                         </Container>
