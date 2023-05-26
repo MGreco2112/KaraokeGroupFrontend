@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { apiHostUrl, loginToken} from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import Guest from "../guest/Guest";
 import Button from "../common/Button";
 import Container from "../common/Container";
 
@@ -67,12 +68,15 @@ const Room = () => {
 
         return(
                 <Container style={{minHeight: '10em'}}>
-                    <h2>Host: {room.host.id}</h2>
+                    <h2>Host: {room.host.id} {room.host.id == auth.id ? `(YOU)` : null}</h2>
                     <h3>Guests:</h3>
 
                     {
                         room.guests.map(guest => {
-                            return <p>{guest.id}</p>
+                            return <Guest
+                                    id={guest.id}
+                                    isCurrentUser={guest.id == auth.id}
+                                />
                         })
                     }
 
