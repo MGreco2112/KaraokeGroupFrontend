@@ -68,7 +68,11 @@ const Room = () => {
 
         return(
                 <Container style={{minHeight: '10em'}}>
-                    <h2>Host: {room.host.id} {room.host.id == auth.id ? `(YOU)` : null}</h2>
+                    <h2>Host:</h2>
+                    <Guest
+                        id={room.host.id}
+                        isCurrentUser={room.host.id == auth.id}
+                    />
                     <h3>Guests:</h3>
 
                     {
