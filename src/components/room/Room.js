@@ -61,6 +61,20 @@ const Room = () => {
         }
     }
 
+    const _closeRoom = async () => {
+        try {
+            await axios.delete(`${apiHostUrl}/api/rooms/delete/id/${room.id}`, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            _leaveRoom();
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
+        }
+    }
+
     _getRoom();
 
     const formatGuests = () => {
@@ -106,6 +120,16 @@ const Room = () => {
                                 style={{width: '10%'}}
                                 onClick={_leaveRoom}
                             >Leave Room</Button>
+
+                            {auth.id == room.host.id ?
+                                <Button
+                                    style={{width: '10%'}}
+                                    onClick={_closeRoom}
+                                >Close Room</Button>
+                                :
+                                null
+                            }
+
                         </Container>
 
             }
