@@ -75,6 +75,22 @@ const Room = () => {
         }
     }
 
+    const _changeHost = async () => {
+        const newHost = selectHost(); //write this function to pick guest
+
+        try {
+            const res = await axios.put(`${apiHostUrl}/api/rooms/update/host/${newHost}/room/${room.id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            setRoom(res.data);
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
+        }
+    }
+
     _getRoom();
 
     const formatGuests = () => {
@@ -116,18 +132,24 @@ const Room = () => {
                         <Container style={{minHeight: '0em'}}>
                             <h2>ID: {room.id}</h2>
                             {formatGuests()}
-                            <Button
-                                style={{width: '10%'}}
-                                onClick={_leaveRoom}
-                            >Leave Room</Button>
 
                             {auth.id == room.host.id ?
+                                <Container style={{minHeight: '0em'}}>
+                                    <Button
+                                        style={{width: '10%'}}
+                                        onClick={_changeHost}
+                                    >Change Host</Button>
+                                    <Button
+                                        style={{width: '10%'}}
+                                        onClick={_closeRoom}
+                                    >Close Room</Button>
+                                </Container>
+                                :
                                 <Button
                                     style={{width: '10%'}}
-                                    onClick={_closeRoom}
-                                >Close Room</Button>
-                                :
-                                null
+                                    onClick={_leaveRoom}
+                                >Leave Room</Button>
+
                             }
 
                         </Container>
