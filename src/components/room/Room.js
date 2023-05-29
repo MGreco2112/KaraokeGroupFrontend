@@ -77,6 +77,9 @@ const Room = () => {
 
     const _changeHost = async () => {
         const newHost = selectHost(); //write this function to pick guest
+        if (newHost === null) {
+            return;
+        }
 
         try {
             const res = await axios.put(`${apiHostUrl}/api/rooms/update/host/${newHost}/room/${room.id}`, {}, {
@@ -88,6 +91,30 @@ const Room = () => {
             setRoom(res.data);
         } catch (err) {
             console.error(err.message ? err.message : err.response);
+        }
+    }
+
+    const selectHost = () => {
+        const basicPrompt = "Enter the number next to the new Host\n0 to quit\n";
+        let position = 1;
+
+        const guestMap = room.guests.map(guest => {
+            return `${position++}) ` + guest.id + "\n"
+        });
+
+        let selection = prompt(`${basicPrompt}${guestMap}`);
+
+        if (selection === 0) {
+            return null;
+        }
+
+        if (selection >= room.guests.length  || selection < 0) {
+            alert('Invalid Selection, try again.');
+            selectHost();
+        } else {
+            selection--;
+
+            return room.guests[selection].id;
         }
     }
 
