@@ -31,6 +31,24 @@ const Home = () => {
         
     }
 
+    const _joinRoom = async () => {
+        try {
+            const res = await axios.post(`${apiHostUrl}/api/guest`, {}, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            setAuth(res.data);
+            saveAuth(res.data);
+
+            navigate(`/room/search`);
+
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
+        }
+    }
+
     const _createRoom = async (host) => {
 
         try {
@@ -52,7 +70,7 @@ const Home = () => {
     }
 
     const onCreateGuestClick = () => {
-        _createGuestUser();
+        _joinRoom();
         //navigate to join room page
     }
 
