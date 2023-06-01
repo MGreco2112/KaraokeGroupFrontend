@@ -12,62 +12,64 @@ const RoomSearch = () => {
     const [auth] = useContext(AuthContext);
     const navigate = useNavigate();
 
-    const [roomNum, setRoomNum] = useState();
+    const [roomNum, setRoomNum] = useState({
+        id: ''
+    });
 
     const updateRoomNum = (e) => {
-        const value = e.target.value;
 
-        console.log(parseInt(value));
-
-        if (parseInt(value) !== NaN) {
-            console.log(true);
-            const parsedNum = parseInt(value);
-    
-            if (document.getElementById('warning')) {
-                document.removeChild(document.getElementById('warning'));
-            }
-    
-            setRoomNum(parsedNum);
-
-        } else {
-            const selDiv = document.getElementById('roomDiv');
-            const newElement = document.createElement("small");
-            newElement.id = "warning"
-            newElement.innerText = "Invalid Room Number, Try Again"
-            selDiv.appendChild(newElement);
+        if (document.getElementById('newSmall')) {
+            document.removeChild('newSmall');
         }
 
+        setRoomNum({
+            id: e.target.value
+        });
+    }
 
+    const validateId = (id) => {
+        return /^\d+$/.test(id);
     }
 
     const _getRoom = async () => {
-        try {
-            const res = await axios.get(`${apiHostUrl}/api/rooms/id/${roomNum}`, {
-                headers: {
-                    Authorization: `Bearer ${loginToken}`
+
+        if (validateId(roomNum.id)) {
+                try {
+                    const res = await axios.get(`${apiHostUrl}/api/rooms/id/${roomNum.id}`, {
+                        headers: {
+                            Authorization: `Bearer ${loginToken}`
+                        }
+                    });
+        
+                    _addGuestToRoom(res.data.id);
+        
+                } catch (err) {
+                    console.error(err.message ? err.message : err.response);
                 }
-            });
-
-            _addGuestToRoom(res.data.id);
-
-        } catch (err) {
-            console.error(err.message ? err.message : err.response);
+        } else {
+            const div = document.getElementById('roomDiv');
+            const newSmall = document.createElement('small');
+            newSmall.id = 'newSmall';
+            newSmall.innerHTML = 'Invalid Room ID, Try Again';
+            div.appendChild(newSmall);
         }
+        
     }
-
-    const _addGuestToRoom = async (roomId) => {
-        try {
-            const res = await axios.put(`${apiHostUrl}/api/rooms/add/guest/${auth.id}/room/${roomId}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${loginToken}`
-                }
-            });
-
-            navigate(`/room/${roomId}`);
-        } catch (err) {
-            console.error(err.message ? err.message : err.response);
+        
+        const _addGuestToRoom = async (roomId) => {
+            try {
+                const res = await axios.put(`${apiHostUrl}/api/rooms/add/guest/${auth.id}/room/${roomId}`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${loginToken}`
+                    }
+                });
+    
+                navigate(`/room/${roomId}`);
+            } catch (err) {
+                console.error(err.message ? err.message : err.response);
+            }
         }
-    }
+
 
 
     return(
@@ -77,7 +79,7 @@ const RoomSearch = () => {
                 style={{width: '25%'}}
                 name="roomNum"
                 id="roomNum"
-                value={roomNum}
+                value={roomNum.id}
                 onChange={updateRoomNum}
                 placeholder="Host's Room Number"
                 required
