@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 const Container = (props) => {
     return (
-        <div style={{...defaultStyle, ...props.style}}>
+        <div id={props.id} style={{...defaultStyle, ...props.style}}>
             {props.children}
         </div>
     )

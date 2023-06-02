@@ -19,7 +19,7 @@ const RoomSearch = () => {
     const updateRoomNum = (e) => {
 
         if (document.getElementById('newSmall')) {
-            document.removeChild('newSmall');
+            document.getElementById('roomDiv').removeChild(document.getElementById('newSmall'));
         }
 
         setRoomNum({
@@ -45,30 +45,36 @@ const RoomSearch = () => {
         
                 } catch (err) {
                     console.error(err.message ? err.message : err.response);
+                    createErrorInfo();
                 }
         } else {
-            const div = document.getElementById('roomDiv');
-            const newSmall = document.createElement('small');
-            newSmall.id = 'newSmall';
-            newSmall.innerHTML = 'Invalid Room ID, Try Again';
-            div.appendChild(newSmall);
+            createErrorInfo();
         }
         
     }
+
+    const createErrorInfo = () => {
+        const div = document.getElementById('roomDiv');
+        const newSmall = document.createElement('small');
+        newSmall.id = 'newSmall';
+        newSmall.innerHTML = 'Invalid Room ID, Try Again';
+        newSmall.style.color = 'red';
+        div.appendChild(newSmall);
+    }
         
-        const _addGuestToRoom = async (roomId) => {
-            try {
-                const res = await axios.put(`${apiHostUrl}/api/rooms/add/guest/${auth.id}/room/${roomId}`, {}, {
-                    headers: {
-                        Authorization: `Bearer ${loginToken}`
-                    }
-                });
+    const _addGuestToRoom = async (roomId) => {
+        try {
+            const res = await axios.put(`${apiHostUrl}/api/rooms/add/guest/${auth.id}/room/${roomId}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
     
-                navigate(`/room/${roomId}`);
-            } catch (err) {
-                console.error(err.message ? err.message : err.response);
-            }
+            navigate(`/room/${roomId}`);
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
         }
+    }
 
 
 
