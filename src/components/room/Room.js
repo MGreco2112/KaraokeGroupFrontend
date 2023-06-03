@@ -76,19 +76,33 @@ const Room = () => {
     }
 
     const _changeHost = async () => {
-        const newHost = selectHost(); //write this function to pick guest
+        const newHost = selectHost();
         if (newHost === null) {
             return;
         }
 
+
+        //TODO Break each axios call into own function, debugt which call is throwing backend JSON cascading error
         try {
-            const res = await axios.put(`${apiHostUrl}/api/rooms/update/host/${newHost}/room/${room.id}`, {}, {
+            const moveHostToGuest = await axios.put(`${apiHostUrl}/api/rooms/add/guest/${room.host.id}/room/${room.id}`, {}, {
                 headers: {
                     Authorization: `Bearer ${loginToken}`
                 }
             });
 
-            setRoom(res.data);
+            const setNewHost = await axios.put(`${apiHostUrl}/api/rooms/update/host/${newHost}/room/${room.id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            const removeNewHostFromGuests = await axios.put(`${apiHostUrl}/api/rooms/remove/guest/${newHost}/room/${room.id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            setRoom(removeNewHostFromGuests.data);
         } catch (err) {
             console.error(err.message ? err.message : err.response);
         }
@@ -104,11 +118,11 @@ const Room = () => {
 
         let selection = prompt(`${basicPrompt}${guestMap}`);
 
-        if (selection === 0) {
+        if (selection === 0 || selection === undefined) {
             return null;
         }
 
-        if (selection >= room.guests.length  || selection < 0) {
+        if (selection - 1 >= room.guests.length  || selection < 0) {
             alert('Invalid Selection, try again.');
             selectHost();
         } else {
