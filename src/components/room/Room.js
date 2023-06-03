@@ -81,28 +81,46 @@ const Room = () => {
             return;
         }
 
+        _removeNewHostFromGuest(newHost);
+    }
 
-        //TODO Break each axios call into own function, debugt which call is throwing backend JSON cascading error
+    const _removeNewHostFromGuest = async (newHost) => {
         try {
-            const moveHostToGuest = await axios.put(`${apiHostUrl}/api/rooms/add/guest/${room.host.id}/room/${room.id}`, {}, {
+            const res = await axios.put(`${apiHostUrl}/api/rooms/remove/guest/${newHost}/room/${room.id}`, {}, {
                 headers: {
                     Authorization: `Bearer ${loginToken}`
                 }
             });
 
+            _moveHostToGuest(newHost);
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
+        }
+    }
+
+    const _moveHostToGuest = async (newHost) => {
+        try {
+            const res = await axios.put(`${apiHostUrl}/api/rooms/add/guest/${room.host.id}/room/${room.id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            _setNewHost(newHost);
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
+        }
+    }
+
+    const _setNewHost = async (newHost) => {
+        try {
             const setNewHost = await axios.put(`${apiHostUrl}/api/rooms/update/host/${newHost}/room/${room.id}`, {}, {
                 headers: {
                     Authorization: `Bearer ${loginToken}`
                 }
             });
 
-            const removeNewHostFromGuests = await axios.put(`${apiHostUrl}/api/rooms/remove/guest/${newHost}/room/${room.id}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${loginToken}`
-                }
-            });
-
-            setRoom(removeNewHostFromGuests.data);
+            setRoom(setNewHost.data);
         } catch (err) {
             console.error(err.message ? err.message : err.response);
         }
@@ -151,6 +169,7 @@ const Room = () => {
                             return <Guest
                                     id={guest.id}
                                     isCurrentUser={guest.id == auth.id}
+                                    key={guest.id}
                                 />
                         })
                     }
