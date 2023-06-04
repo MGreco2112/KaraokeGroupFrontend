@@ -81,40 +81,12 @@ const Room = () => {
             return;
         }
 
-        _removeNewHostFromGuest(newHost);
-    }
-
-    const _removeNewHostFromGuest = async (newHost) => {
-        try {
-            const res = await axios.put(`${apiHostUrl}/api/rooms/remove/guest/${newHost}/room/${room.id}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${loginToken}`
-                }
-            });
-
-            _moveHostToGuest(newHost);
-        } catch (err) {
-            console.error(err.message ? err.message : err.response);
-        }
-    }
-
-    const _moveHostToGuest = async (newHost) => {
-        try {
-            const res = await axios.put(`${apiHostUrl}/api/rooms/add/guest/${room.host.id}/room/${room.id}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${loginToken}`
-                }
-            });
-
-            _setNewHost(newHost);
-        } catch (err) {
-            console.error(err.message ? err.message : err.response);
-        }
+        _setNewHost(newHost);
     }
 
     const _setNewHost = async (newHost) => {
         try {
-            const setNewHost = await axios.put(`${apiHostUrl}/api/rooms/update/host/${newHost}/room/${room.id}`, {}, {
+            const setNewHost = await axios.put(`${apiHostUrl}/api/rooms/update/host/${newHost}/guest/${room.host.id}/room/${room.id}`, {}, {
                 headers: {
                     Authorization: `Bearer ${loginToken}`
                 }
