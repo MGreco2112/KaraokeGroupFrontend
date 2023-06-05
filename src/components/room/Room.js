@@ -30,7 +30,7 @@ const Room = () => {
     }, []);
 
     const _getRoom = async () => {
-        // if (loading) {
+        if (loading) {
             try {
                 const res = await axios.get(`${apiHostUrl}/api/rooms/id/${params.id}`, {
                     headers: {
@@ -38,13 +38,17 @@ const Room = () => {
                     }
                 });
 
+                console.log(res.data);
+
                 setRoom(res.data);
                 setLoading(false);
 
             } catch (err) {
                 console.error(err.message ? err.message : err.response);
+
+                _leaveRoom();
             }
-        // }
+        }
     }
 
     const _leaveRoom = async () => {
@@ -116,7 +120,9 @@ const Room = () => {
 
         let selection = prompt(`${basicPrompt}${guestMap}`);
 
-        if (selection === 0 || selection === undefined) {
+        console.log(selection);
+
+        if (selection === 0 || selection === null) {
             return null;
         }
 
