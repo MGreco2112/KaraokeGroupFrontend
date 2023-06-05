@@ -38,8 +38,6 @@ const Room = () => {
                     }
                 });
 
-                console.log(res.data);
-
                 setRoom(res.data);
                 setLoading(false);
 
