@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { apiHostUrl, loginToken} from "../config";
@@ -21,8 +21,16 @@ const Room = () => {
 
     const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            _getRoom();
+        }, 5_000);
+
+        return() => clearInterval(interval);
+    }, []);
+
     const _getRoom = async () => {
-        if (loading) {
+        // if (loading) {
             try {
                 const res = await axios.get(`${apiHostUrl}/api/rooms/id/${params.id}`, {
                     headers: {
@@ -36,7 +44,7 @@ const Room = () => {
             } catch (err) {
                 console.error(err.message ? err.message : err.response);
             }
-        }
+        // }
     }
 
     const _leaveRoom = async () => {
