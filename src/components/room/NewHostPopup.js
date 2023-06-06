@@ -1,5 +1,7 @@
 import React from "react";
 import Container from "../common/Container";
+import Radio from "../common/Radio";
+
 
 const NewHostPopup = (props) => {
     const {guests, prompt} = props.guests;
