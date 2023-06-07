@@ -134,8 +134,6 @@ const Room = () => {
         }
     }
 
-    _getRoom();
-
     const formatGuests = () => {
         //todo refactor with a guest component with buttons
 
@@ -155,6 +153,15 @@ const Room = () => {
                                     isCurrentUser={guest.id == auth.id}
                                     key={guest.id}
                                 />
+                        })
+                    }
+
+                    <h3>Songs:</h3>
+
+                    {
+                        room.songs.map(song => {
+                            //refactor to custom Song Component with buttons for the future
+                            return <h3 key={song.id}>{song.id}</h3> 
                         })
                     }
 
