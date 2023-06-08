@@ -5,6 +5,7 @@ import { apiHostUrl, loginToken} from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import Guest from "../guest/Guest";
+import Song from "./Song";
 import Button from "../common/Button";
 import Container from "../common/Container";
 
@@ -161,7 +162,12 @@ const Room = () => {
                     {
                         room.songs.map(song => {
                             //refactor to custom Song Component with buttons for the future
-                            return <h3 key={song.id}>{song.id}</h3> 
+                            return <Song
+                                    key={song.id}
+                                    id={song.id}
+                                    name={song.name}
+                                    spotifySongURL={song.spotifySongURL}
+                                />
                         })
                     }
 
