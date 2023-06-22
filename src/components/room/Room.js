@@ -8,6 +8,8 @@ import Guest from "../guest/Guest";
 import Song from "./Song";
 import Button from "../common/Button";
 import Container from "../common/Container";
+import Input from "../common/Input";
+import InlineInputContainer from "../common/InlineInputContainer";
 
 const Room = () => {
     const params = useParams();
@@ -18,6 +20,10 @@ const Room = () => {
 
     const [room, setRoom] = useState({
         id: null
+    });
+
+    const [songQuery, setSongQuery] = useState({
+        name: ''
     });
 
     const [loading, setLoading] = useState(true);
@@ -188,6 +194,19 @@ const Room = () => {
                     :
                         <Container style={{minHeight: '0em'}}>
                             <h2>ID: {room.id}</h2>
+
+                            <InlineInputContainer style={{width: '25%'}}>
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    placeholder="Search By Song Name"
+                                    value={songQuery.name}
+                                    required
+                                />
+                                {/* TODO: Create the logic for when the button is clicked to search Spotify for query */}
+                                <Button>Search Spotify</Button>
+                            </InlineInputContainer>
+
                             {formatGuests()}
 
                             {auth.id == room.host.id ?
