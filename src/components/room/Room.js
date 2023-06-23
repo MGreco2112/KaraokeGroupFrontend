@@ -182,6 +182,14 @@ const Room = () => {
             );
     }
 
+    const _searchSpotify = async () => {
+        try {
+            //call external api with oauth token authorization
+        } catch (err) {
+            console.error(err.messasge ? err.message : err.response);
+        }
+    }
+
 
     
 
@@ -204,7 +212,7 @@ const Room = () => {
                                     required
                                 />
                                 {/* TODO: Create the logic for when the button is clicked to search Spotify for query */}
-                                <Button>Search Spotify</Button>
+                                <Button onClick={_searchSpotify}>Search Spotify</Button>
                             </InlineInputContainer>
 
                             {formatGuests()}
