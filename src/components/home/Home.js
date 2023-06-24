@@ -3,6 +3,8 @@ import axios from "axios";
 import { apiHostUrl, loginToken } from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { spotifyClientId } from "../config";
+import { generateRandomString } from "../SpotifyComponents/SpotifyComponents";
 import Container from "../common/Container";
 import Button from "../common/Button";
 
@@ -11,6 +13,28 @@ const Home = () => {
     const [auth, setAuth, saveAuth, deleteAuth] = useContext(AuthContext);
 
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const spotifyOauth = () => {
+            const client_id = spotifyClientId;
+            const redirect_uri = 'http://localhost:3000';
+
+            const state = generateRandomString(16);
+
+            localStorage.setItem("stateKey", JSON.stringify(state));
+            const scope = 'user-read-private user-read-email';
+
+            let url = 'https://accounts.spotify.com/authorize';
+            url += '?response_type=token';
+            url += '&client_id=' + encodeURIComponent(client_id);
+            url += '&scope=' + encodeURIComponent(scope);
+            url += '&redirect_uri=' + encodeURIComponent(redirect_uri);
+            url += '&state=' + encodeURIComponent(state);
+
+        }
+
+        spotifyOauth();
+    }, []);
 
     const _createGuestUser = async () => {
         try {

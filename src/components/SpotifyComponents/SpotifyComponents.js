@@ -1,9 +1,6 @@
-import React from "react";
-
-const SpotifyComponents = () => {
 
     //generate random string for hashing
-    const generateRandomString = (length) => {
+    export const generateRandomString = (length) => {
         let text = '';
 
         let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -15,7 +12,7 @@ const SpotifyComponents = () => {
         return text;
     }
 
-    const generateCodeChallenge = async (codeVerifier) => {
+    export const generateCodeChallenge = async (codeVerifier) => {
         const base64encode = (string) => {
             return btoa(String.fromCharCode.apply(null, new Uint8Array(string)))
                 .replace(/\+/g, '-')
@@ -31,10 +28,3 @@ const SpotifyComponents = () => {
     }
 
 
-    
-    return(
-        <h1>SpotifyComponents</h1>
-    );
-}
-
-export default SpotifyComponents;

@@ -72,6 +72,8 @@ const Room = () => {
                 id: null
             });
 
+            localStorage.removeItem("stateKey");
+
             navigate("/");
         } catch (err) {
             console.error(err.response ? err.response : err.message);
