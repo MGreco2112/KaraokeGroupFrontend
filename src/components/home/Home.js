@@ -31,10 +31,21 @@ const Home = () => {
             url += '&redirect_uri=' + encodeURIComponent(redirect_uri);
             url += '&state=' + encodeURIComponent(state);
 
+            _authorizeSpotify(url);            
         }
 
         spotifyOauth();
     }, []);
+
+    const _authorizeSpotify = async (url) => {
+        try {
+            const res = await axios.post(url);
+
+            console.log(res);
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
+        }
+    }
 
     const _createGuestUser = async () => {
         try {
