@@ -31,7 +31,7 @@ const Home = () => {
             url += '&redirect_uri=' + encodeURIComponent(redirect_uri);
             url += '&state=' + encodeURIComponent(state);
 
-            _authorizeSpotify(url);            
+            // _authorizeSpotify(url);         
         }
 
         spotifyOauth();
