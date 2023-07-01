@@ -1,16 +1,14 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import axios from "axios";
-import queryString from "query-string";
 import { apiHostUrl, loginToken } from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { spotifyClientId } from "../config";
 import { spotifyOauth } from "../SpotifyComponents/SpotifyComponents";
 import Container from "../common/Container";
 import Button from "../common/Button";
 
 const Home = () => {
-  const [auth, setAuth, saveAuth, deleteAuth] = useContext(AuthContext);
+  const [auth, setAuth, saveAuth] = useContext(AuthContext);
 
   const navigate = useNavigate();
 
