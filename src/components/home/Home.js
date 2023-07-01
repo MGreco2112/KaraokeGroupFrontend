@@ -5,7 +5,7 @@ import { apiHostUrl, loginToken } from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { spotifyClientId } from "../config";
-import { generateRandomString } from "../SpotifyComponents/SpotifyComponents";
+import { spotifyOauth } from "../SpotifyComponents/SpotifyComponents";
 import Container from "../common/Container";
 import Button from "../common/Button";
 
@@ -15,60 +15,11 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const spotifyOauth = () => {
-      const client_id = spotifyClientId;
-      const redirect_uri = "http://localhost:3000";
-      const state = generateRandomString(16);
-      const scope = "user-read-private user-read-email";
-
-      const queryParams = queryString.stringify({
-        response_type: "token",
-        client_id,
-        redirect_uri,
-        state,
-        scope,
-      });
-
-      const authUrl = `https://accounts.spotify.com/authorize?${queryParams}`;
-      window.location.href = authUrl;
-      handleAuthorizationCallback(state);
-    };
-
+    
     if (localStorage.getItem("stateKey") === null) {
-        console.log(true);
         spotifyOauth();
     }
   }, []);
-
-  const handleAuthorizationCallback = (state) => {
-    const hashParams = queryString.parse(window.location.hash);
-
-    if (hashParams.access_token) {
-      // Handle successful authorization
-      const accessToken = hashParams.access_token;
-      // Use the access token for subsequent API calls
-      _fetchUserProfile(accessToken);
-      localStorage.setItem("stateKey", state);
-    } else {
-      // Handle authorization error
-      const error = hashParams.error;
-      console.error("Authorization Error:", error);
-    }
-  };
-
-  const _fetchUserProfile = async (accessToken) => {
-    try {
-      const res = await axios.get("https://api.spotify.com/v1/me", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      console.log("User Profile:", res.data);
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
-    }
-  };
 
   const _createGuestUser = async () => {
     try {

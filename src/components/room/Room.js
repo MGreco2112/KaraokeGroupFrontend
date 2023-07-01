@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { apiHostUrl, loginToken} from "../config";
+import { apiHostUrl, loginToken, spotifySearchUrl } from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { spotifyOauth } from "../SpotifyComponents/SpotifyComponents";
 import Guest from "../guest/Guest";
 import Song from "./Song";
 import Button from "../common/Button";
@@ -33,7 +34,14 @@ const Room = () => {
             _getRoom();
         }, 5_000);
 
-        return() => clearInterval(interval);
+        const tokenInterval = setInterval(() => {
+            _updateAccessToken();
+        }, 3_600_000);
+
+        return() => {
+            clearInterval(interval);
+            clearInterval(tokenInterval);
+        }
     }, []);
 
     const _getRoom = async () => {
@@ -54,6 +62,10 @@ const Room = () => {
                 _leaveRoom();
             }
         }
+    }
+
+    const _updateAccessToken = async () => {
+        spotifyOauth();
     }
 
     const _leaveRoom = async () => {
@@ -143,6 +155,28 @@ const Room = () => {
         }
     }
 
+    const _searchSpotify = async () => {
+        const parsedQuery = songQuery.name.replace(" ", "+");
+
+        try {
+            const res = await axios.get(`${spotifySearchUrl}q=${parsedQuery}&type=track`, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("spotifyToken")}`
+                }
+            });
+
+            console.log(res.data);
+        } catch (err) {
+            console.error(err.messasge ? err.message : err.response);
+        }
+    }
+
+    const handleSearchChange = (e) => {
+        setSongQuery({
+            [e.target.id]: e.target.value
+        });
+    }
+
     const formatGuests = () => {
         //todo refactor with a guest component with buttons
 
@@ -183,16 +217,6 @@ const Room = () => {
             
             );
     }
-
-    const _searchSpotify = async () => {
-        try {
-            //call external api with oauth token authorization
-        } catch (err) {
-            console.error(err.messasge ? err.message : err.response);
-        }
-    }
-
-
     
 
     return(
@@ -211,6 +235,7 @@ const Room = () => {
                                     name="name"
                                     placeholder="Search By Song Name"
                                     value={songQuery.name}
+                                    onChange={handleSearchChange}
                                     required
                                 />
                                 {/* TODO: Create the logic for when the button is clicked to search Spotify for query */}
