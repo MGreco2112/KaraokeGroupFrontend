@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { apiHostUrl, loginToken, spotifySearchUrl } from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { spotifyOauth } from "../SpotifyComponents/SpotifyComponents";
+import { spotifyOauthRoom } from "../SpotifyComponents/SpotifyComponents";
 import Guest from "../guest/Guest";
 import Song from "./Song";
 import Button from "../common/Button";
@@ -65,7 +65,7 @@ const Room = () => {
     }
 
     const _updateAccessToken = async () => {
-        spotifyOauth();
+        spotifyOauthRoom(room.id);
     }
 
     const _leaveRoom = async () => {
