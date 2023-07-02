@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { apiHostUrl, loginToken, spotifySearchUrl } from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import { spotifyOauthRoom } from "../SpotifyComponents/SpotifyComponents";
+import { spotifyOauth } from "../SpotifyComponents/SpotifyComponents";
 import Guest from "../guest/Guest";
 import Song from "./Song";
 import Button from "../common/Button";
@@ -27,6 +27,9 @@ const Room = () => {
         name: ''
     });
 
+    const [spotifySearch, setSpotifySearch] = useState([]);
+    const [nextSearchPage, setNextSearchPage] = useState('');
+
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -35,7 +38,7 @@ const Room = () => {
         }, 5_000);
 
         const tokenInterval = setInterval(() => {
-            _updateAccessToken();
+            spotifyOauth();
         }, 3_600_000);
 
         return() => {
@@ -65,7 +68,7 @@ const Room = () => {
     }
 
     const _updateAccessToken = async () => {
-        spotifyOauthRoom(room.id);
+        spotifyOauth(room.id);
     }
 
     const _leaveRoom = async () => {
@@ -165,9 +168,16 @@ const Room = () => {
                 }
             });
 
-            console.log(res.data);
+            setSpotifySearch(res.data.tracks.items);
+            setNextSearchPage(res.data.tracks.next);
+
+            //create input window holding res.data.tracks.items with a button to next inside
         } catch (err) {
             console.error(err.messasge ? err.message : err.response);
+
+            if (err.response && err.response.data.error.status === 401) {
+                spotifyOauth();
+            }
         }
     }
 

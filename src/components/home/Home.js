@@ -13,9 +13,51 @@ const Home = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+
+    const _getGuestRoom = async () => {
+      try {
+        const res = await axios.get(`${apiHostUrl}/api/guest/id/${auth.id}`, {
+          headers: {
+            Authorization: `Bearer ${loginToken}`
+          }
+        });
+
+        navigate(`/room/${res.data.roomId}`);
+      } catch (err) {
+        console.error(err.response ? err.response : err.message);
+
+        // console.log(err.response.status);
+        if (err.response && err.response.status === 401) {
+          _getHostRoom();
+        }
+      }
+    }
+
+    const _getHostRoom = async () => {
+      try {
+        const res = await axios.get(`${apiHostUrl}/api/rooms/host/id/${auth.id}`, {
+          headers: {
+            Authorization: `Bearer ${loginToken}`
+          }
+        });
+
+        navigate(`room/${res.data.id}`);
+      } catch (err) {
+        console.error(err.response ? err.response : err.message);
+
+        localStorage.removeItem("id");
+        localStorage.removeItem('stateKey');
+        navigate('/');
+      }
+    }
+  
     
-    if (localStorage.getItem("stateKey") === null) {
+    if (!auth.id && localStorage.getItem("stateKey") === null) {
         spotifyOauth();
+    }
+
+    if (auth.id) {
+      _getGuestRoom();
     }
   }, []);
 

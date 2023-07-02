@@ -49,25 +49,6 @@ export const spotifyOauth = () => {
     handleAuthorizationCallback(state);
 };
 
-export const spotifyOauthRoom = (id) => {
-    const client_id = spotifyClientId;
-    const redirect_uri =`http://localhost:3000/room/${id}`;
-    const state = generateRandomString(16);
-    const scope = "user-read-private user-read-email";
-
-    const queryParams = queryString.stringify({
-      response_type: "token",
-      client_id,
-      redirect_uri,
-      state,
-      scope,
-  });
-
-  const authUrl = `https://accounts.spotify.com/authorize?${queryParams}`;
-  window.location.href = authUrl;
-  handleAuthorizationCallback(state);
-}
-
 const handleAuthorizationCallback = (state) => {
     const hashParams = queryString.parse(window.location.hash);
 
