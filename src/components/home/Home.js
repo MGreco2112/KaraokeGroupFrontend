@@ -63,10 +63,7 @@ const Home = () => {
 
   const _createGuestUser = async () => {
     try {
-      const res = await axios.post(
-        `${apiHostUrl}/api/guest`,
-        {},
-        {
+      const res = await axios.post(`${apiHostUrl}/api/guest`, {}, {
           headers: {
             Authorization: `Bearer ${loginToken}`,
           },
@@ -84,18 +81,18 @@ const Home = () => {
 
   const _joinRoom = async () => {
     try {
-      const res = await axios.post(
-        `${apiHostUrl}/api/guest`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${loginToken}`,
-          },
-        }
-      );
 
-      setAuth(res.data);
-      saveAuth(res.data);
+      if (!auth.id) {
+        const res = await axios.post(`${apiHostUrl}/api/guest`, {}, {
+            headers: {
+              Authorization: `Bearer ${loginToken}`,
+            },
+          }
+        );
+        
+        setAuth(res.data);
+        saveAuth(res.data);
+      }
 
       navigate(`/room/search`);
     } catch (err) {

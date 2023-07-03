@@ -142,8 +142,6 @@ const Room = () => {
 
         let selection = prompt(`${basicPrompt}${guestMap}`);
 
-        console.log(selection);
-
         if (selection === 0 || selection === null) {
             return null;
         }
@@ -168,6 +166,8 @@ const Room = () => {
                 }
             });
 
+            console.log(res.data.tracks.items);
+
             setSpotifySearch(res.data.tracks.items);
             setNextSearchPage(res.data.tracks.next);
 
@@ -178,6 +178,49 @@ const Room = () => {
             if (err.response && err.response.data.error.status === 401) {
                 spotifyOauth();
             }
+        }
+    }
+
+    const songSelectionPrompt = () => {
+        const basicPrompt = "Enter the number next to the song you want to add.\nEnter 0 for next page.\n";
+        let position = 1;
+
+        const songMap = spotifySearch.map(song => {
+            return `${position}) ${song.name}: ${song.artists[0].name}\n`;
+        });
+
+        const selection = prompt(`${basicPrompt}${songMap}`);
+
+        if (selection === null) {
+            return null;
+        } else if (selection === 0) {
+            _nextSpotifyResultsPage()
+        }
+
+        if (selection - 1 >= spotifySearch.length  || selection < 0) {
+            alert("Invalid selection, try again");
+            songSelectionPrompt();
+        } else {
+            selection--;
+            return spotifySearch[selection];
+        }
+
+    }
+
+    const _nextSpotifyResultsPage = async () => {
+        try {
+            const res = await axios.get(nextSearchPage, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("spotifyToken")}`
+                }
+            });
+
+            setSpotifySearch(res.data.tracks.items);
+            setNextSearchPage(res.data.tracks.next);
+
+            songSelectionPrompt();
+        } catch (err) {
+            console.error(err.response ? err.response : err.message);
         }
     }
 
