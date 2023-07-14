@@ -218,10 +218,18 @@ const Room = () => {
             setSpotifySearch(res.data.tracks.items);
             setNextSearchPage(res.data.tracks.next);
 
-            songSelectionPrompt();
+            const song = songSelectionPrompt();
+
+            console.log(song);
+
+            _saveSongToRoom(song);
         } catch (err) {
             console.error(err.response ? err.response : err.message);
         }
+    }
+
+    const _saveSongToRoom = async (song) => {
+
     }
 
     const handleSearchChange = (e) => {
