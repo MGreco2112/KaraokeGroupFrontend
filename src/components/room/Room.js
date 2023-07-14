@@ -171,7 +171,13 @@ const Room = () => {
             setSpotifySearch(res.data.tracks.items);
             setNextSearchPage(res.data.tracks.next);
 
-            //create input window holding res.data.tracks.items with a button to next inside
+            const song = songSelectionPrompt();
+
+            console.log(song);
+
+            if (song != false) {
+                _saveSongToRoom(song);
+            }
         } catch (err) {
             console.error(err.messasge ? err.message : err.response);
 
@@ -186,7 +192,7 @@ const Room = () => {
         let position = 1;
 
         const songMap = spotifySearch.map(song => {
-            return `${position}) ${song.name}: ${song.artists[0].name}\n`;
+            return `${position++}) ${song.name}: ${song.artists[0].name}\n`;
         });
 
         const selection = prompt(`${basicPrompt}${songMap}`);
@@ -201,7 +207,8 @@ const Room = () => {
             alert("Invalid selection, try again");
             songSelectionPrompt();
         } else {
-            selection--;
+            --selection;
+
             return spotifySearch[selection];
         }
 
@@ -218,19 +225,34 @@ const Room = () => {
             setSpotifySearch(res.data.tracks.items);
             setNextSearchPage(res.data.tracks.next);
 
-            const song = songSelectionPrompt();
-
-            console.log(song);
-
-            _saveSongToRoom(song);
+            songSelectionPrompt();
         } catch (err) {
             console.error(err.response ? err.response : err.message);
         }
     }
 
     const _saveSongToRoom = async (song) => {
-        //todo create backend object mapped to elements of song
-        //save song to backend
+        //name
+        //id
+        //room
+
+        const formattedSong = {
+            name: song.name,
+            spotifySongURL: song.id,
+            room: room.id
+        }
+
+        try {
+            const res = await axios.post(`${apiHostUrl}/api/spotify/songs`, {formattedSong}, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            console.log(res.data);
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
+        }
 
     }
 
