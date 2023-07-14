@@ -229,6 +229,8 @@ const Room = () => {
     }
 
     const _saveSongToRoom = async (song) => {
+        //todo create backend object mapped to elements of song
+        //save song to backend
 
     }
 
