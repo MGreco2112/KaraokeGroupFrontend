@@ -27,6 +27,8 @@ const Room = () => {
         name: ''
     });
 
+    const [roomSongs, setRoomSongs] = useState([]);
+
     const [spotifySearch, setSpotifySearch] = useState([]);
     const [nextSearchPage, setNextSearchPage] = useState('');
 
@@ -159,6 +161,8 @@ const Room = () => {
     const _searchSpotify = async () => {
         const parsedQuery = songQuery.name.replace(" ", "+");
 
+        let song = 0;
+
         try {
             const res = await axios.get(`${spotifySearchUrl}q=${parsedQuery}&type=track`, {
                 headers: {
@@ -171,19 +175,22 @@ const Room = () => {
             setSpotifySearch(res.data.tracks.items);
             setNextSearchPage(res.data.tracks.next);
 
-            const song = songSelectionPrompt();
+            song = songSelectionPrompt();
 
-            console.log(song);
 
-            if (song != false) {
-                _saveSongToRoom(song);
-            }
         } catch (err) {
             console.error(err.messasge ? err.message : err.response);
 
             if (err.response && err.response.data.error.status === 401) {
                 spotifyOauth();
             }
+        }
+
+
+        console.log(song);
+
+        if (song != false) {
+            _saveSongToRoom(song);
         }
     }
 
@@ -207,9 +214,8 @@ const Room = () => {
             alert("Invalid selection, try again");
             songSelectionPrompt();
         } else {
-            --selection;
 
-            return spotifySearch[selection];
+            return spotifySearch[selection - 1];
         }
 
     }
@@ -232,18 +238,19 @@ const Room = () => {
     }
 
     const _saveSongToRoom = async (song) => {
-        //name
-        //id
-        //room
 
         const formattedSong = {
             name: song.name,
             spotifySongURL: song.id,
-            room: room.id
+            room: {
+                id: room.id
+            }
         }
 
+        console.log(formattedSong);
+
         try {
-            const res = await axios.post(`${apiHostUrl}/api/spotify/songs`, {formattedSong}, {
+            const res = await axios.post(`${apiHostUrl}/api/spotify/songs`, formattedSong, {
                 headers: {
                     Authorization: `Bearer ${loginToken}`
                 }
@@ -287,7 +294,7 @@ const Room = () => {
                     <h3>Songs:</h3>
 
                     {
-                        room.songs.map(song => {
+                        roomSongs.map(song => {
                             //refactor to custom Song Component with buttons for the future
                             return <Song
                                     key={song.id}
