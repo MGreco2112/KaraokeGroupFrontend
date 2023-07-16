@@ -58,13 +58,20 @@ const Room = () => {
                     }
                 });
 
+                const songs = await axios.get(`${apiHostUrl}/api/spotify/songs/room/id/${params.id}`, {
+                    headers: {
+                        Authorization: `Bearer ${loginToken}`
+                    }
+                });
+
                 setRoom(res.data);
+                setRoomSongs(songs.data);
                 setLoading(false);
 
             } catch (err) {
                 console.error(err.message ? err.message : err.response);
 
-                _leaveRoom();
+                // _leaveRoom();
             }
         }
     }
