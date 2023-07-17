@@ -37,6 +37,7 @@ const Room = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             _getRoom();
+            _getRoomSongs();
         }, 5_000);
 
         const tokenInterval = setInterval(() => {
@@ -58,21 +59,30 @@ const Room = () => {
                     }
                 });
 
-                const songs = await axios.get(`${apiHostUrl}/api/spotify/songs/room/id/${params.id}`, {
-                    headers: {
-                        Authorization: `Bearer ${loginToken}`
-                    }
-                });
 
                 setRoom(res.data);
-                setRoomSongs(songs.data);
                 setLoading(false);
 
             } catch (err) {
                 console.error(err.message ? err.message : err.response);
 
-                // _leaveRoom();
+                _leaveRoom();
             }
+        }
+    }
+
+    const _getRoomSongs = async () => {
+        try {
+            const songs = await axios.get(`${apiHostUrl}/api/spotify/songs/room/id/${params.id}`, {
+                headers: {
+                    Authorization: `Bearer ${loginToken}`
+                }
+            });
+
+            setRoomSongs(songs.data);
+
+        } catch (err) {
+            console.error(err.message ? err.message : err.response);
         }
     }
 
