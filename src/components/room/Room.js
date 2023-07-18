@@ -37,7 +37,7 @@ const Room = () => {
     useEffect(() => {
         const interval = setInterval(() => {
             _getRoom();
-            _getRoomSongs();
+            // _getRoomSongs();
         }, 5_000);
 
         const tokenInterval = setInterval(() => {
@@ -71,24 +71,20 @@ const Room = () => {
         }
     }
 
-    const _getRoomSongs = async () => {
-        try {
-            const songs = await axios.get(`${apiHostUrl}/api/spotify/songs/room/id/${params.id}`, {
-                headers: {
-                    Authorization: `Bearer ${loginToken}`
-                }
-            });
+    // const _getRoomSongs = async () => {
+    //     try {
+    //         const songs = await axios.get(`${apiHostUrl}/api/spotify/songs/room/id/${params.id}`, {
+    //             headers: {
+    //                 Authorization: `Bearer ${loginToken}`
+    //             }
+    //         });
 
-            setRoomSongs(songs.data);
+    //         setRoomSongs(songs.data);
 
-        } catch (err) {
-            console.error(err.message ? err.message : err.response);
-        }
-    }
-
-    const _updateAccessToken = async () => {
-        spotifyOauth(room.id);
-    }
+    //     } catch (err) {
+    //         console.error(err.message ? err.message : err.response);
+    //     }
+    // }
 
     const _leaveRoom = async () => {
         try {
@@ -206,7 +202,7 @@ const Room = () => {
 
         console.log(song);
 
-        if (song != false) {
+        if (song != null) {
             _saveSongToRoom(song);
         }
     }
@@ -267,13 +263,14 @@ const Room = () => {
         console.log(formattedSong);
 
         try {
-            const res = await axios.post(`${apiHostUrl}/api/spotify/songs`, formattedSong, {
+            const res = await axios.post(`${apiHostUrl}/api/rooms/${params.id}/new/song`, formattedSong, {
                 headers: {
                     Authorization: `Bearer ${loginToken}`
                 }
             });
 
             console.log(res.data);
+            setRoom(res.data);
         } catch (err) {
             console.error(err.message ? err.message : err.response);
         }
@@ -311,7 +308,7 @@ const Room = () => {
                     <h3>Songs:</h3>
 
                     {
-                        roomSongs.map(song => {
+                        room.songs.map(song => {
                             //refactor to custom Song Component with buttons for the future
                             return <Song
                                     key={song.id}
