@@ -314,6 +314,8 @@ const Room = () => {
                                     key={song.id}
                                     id={song.id}
                                     name={song.name}
+                                    room={room.id}
+                                    setRoom={setRoom}
                                     spotifySongURL={song.spotifySongURL}
                                 />
                         })
