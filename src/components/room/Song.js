@@ -28,8 +28,11 @@ const Song = (props) => {
         <Container style={{minHeight: '0em'}}>
             <BorderCard>
                 <InlineInputContainer>
-                    <p>{name}</p>
+                    <p
+                        style={{paddingRight: '25px'}}
+                    >{name}</p>
                     <Button
+                        style={{width: '25%'}}
                         onClick={onClick}
                     >Remove</Button>
                 </InlineInputContainer>
