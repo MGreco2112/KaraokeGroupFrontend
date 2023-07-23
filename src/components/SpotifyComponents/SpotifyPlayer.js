@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 
 const SpotifyPlayer = (props) => {
 
-    
+    const [player, setPlayer] = useState(undefined);
+    const [is_paused, setPaused] = useState(false);
+    const [is_active, setActive] = useState(false);
+    const [current_track, setTrack] = useState(track);
+
+
     useEffect(() => {
         const script = document.createElement("script");
         script.src = "https://sdk.scdn.co/spotify-player.js";
