@@ -11,6 +11,7 @@ import Button from "../common/Button";
 import Container from "../common/Container";
 import Input from "../common/Input";
 import InlineInputContainer from "../common/InlineInputContainer";
+import SpotifyPlayer from "../SpotifyComponents/SpotifyPlayer";
 
 const Room = () => {
     const params = useParams();
@@ -319,6 +320,15 @@ const Room = () => {
                                     spotifySongURL={song.spotifySongURL}
                                 />
                         })
+                    }
+
+                    {
+                        auth.id == room.host.id && room.songs.length > 0 ?
+                            <SpotifyPlayer
+                                roomTracks={room.songs}
+                            />
+                            :
+                            null
                     }
 
                 </Container>
