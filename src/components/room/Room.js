@@ -326,7 +326,7 @@ const Room = () => {
                         auth.id == room.host.id && room.songs.length > 0 ?
                             <SpotifyPlayer
                                 roomTracks={room.songs}
-                                token={spotifyClientId}
+                                token={auth.spotifyToken}
                             />
                             :
                             null
