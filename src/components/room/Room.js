@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { apiHostUrl, loginToken, spotifySearchUrl } from "../config";
+import { apiHostUrl, loginToken, spotifyClientId, spotifySearchUrl } from "../config";
 import { AuthContext } from "../providers/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { spotifyOauth } from "../SpotifyComponents/SpotifyComponents";
@@ -326,6 +326,7 @@ const Room = () => {
                         auth.id == room.host.id && room.songs.length > 0 ?
                             <SpotifyPlayer
                                 roomTracks={room.songs}
+                                token={spotifyClientId}
                             />
                             :
                             null
